@@ -1,0 +1,58 @@
+change [BEDJET NAME] to your bedjet name, an example one is BEDJET-2E20
+
+
+select:
+  - platform: mqtt
+    command_topic: "bedjet/[BEDJET NAME]/setmode"
+    name: "Bedjet Mode"
+    state_topic: "bedjet/[BEDJET NAME]/mode"
+    options:
+      - "off"
+      - "cool"
+      - "heat"
+      - "turbo"
+      - "dry"
+      - "ext_ht"
+
+  - platform: mqtt
+    command_topic: "bedjet/[BEDJET NAME]/control"
+    name: "Bedjet Controls"
+    options:
+      - "fan_up"
+      - "fan_down"
+      - "temp_up"
+      - "temp_down"
+
+  - platform: mqtt
+    command_topic: "bedjet/[BEDJET NAME]/preset"
+    name: "Bedjet Presets"
+    options:
+      - "m1"
+      - "m2"
+      - "m3"
+
+sensor:
+  - platform: mqtt
+    state_topic: "bedjet/[BEDJET NAME]/temp_actual"
+    name: "Bedjet Actual Temprature"
+    unit_of_measurement: "°F"
+
+  - platform: mqtt
+    state_topic: "bedjet/[BEDJET NAME]/temp_setpoint"
+    name: "Bedjet Setpoint Temprature"
+    unit_of_measurement: "°F"
+
+  - platform: mqtt
+    state_topic: "bedjet/[BEDJET NAME]/time"
+    name: "Bedjet Auto Off"
+    unit_of_measurement: "Seconds"
+
+  - platform: mqtt
+    state_topic: "bedjet/[BEDJET NAME]/timestring"
+    name: "Bedjet Auto Off String"
+    unit_of_measurement: ""
+
+  - platform: mqtt
+    state_topic: "bedjet/[BEDJET NAME]/fan"
+    name: "Bedjet Fan Percentage"
+    unit_of_measurement: "%"
