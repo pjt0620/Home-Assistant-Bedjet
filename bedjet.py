@@ -6,8 +6,10 @@ import sys
 
 mqttBroker = "homeassistant.local" 
 mqttUser = "homeassistant"
-mqttPassword = "wohgh2aijach1the9nei9teihahghaebeuy1ahreidaichupeith6Iudaa1Voo3C"
+mqttPassword = ""
 mqttPort = 1883
+
+btmac = ""
 
 client = mqtt.Client()			
 client.username_pw_set(username=mqttUser,password=mqttPassword)
@@ -49,7 +51,7 @@ class bedjet:
 		except:
 			pass
 		self.adapter.start()
-		self.device = self.adapter.connect('3C:61:05:1D:37:0A')
+		self.device = self.adapter.connect(btmac)
 		self.devname = self.device.char_read("00002001-bed0-0080-aa55-4265644a6574").decode()
 		self.device.subscribe("00002000-bed0-0080-aa55-4265644a6574", callback=self.handle_data)
 				
