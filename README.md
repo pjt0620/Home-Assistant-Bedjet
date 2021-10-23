@@ -1,7 +1,7 @@
 # Home-Assistant-Bedjet
 Bedjet Home Assistant Mqtt Integration
 
-This is a first attempt at a reverse engineered bluetooth mqtt bridge for bedjet (made at 2 in the morning).
+This is a reverse engineered bluetooth mqtt bridge for bedjet to connect with home assistant.
 This has been tested with a raspbery pi and a bedjet v3.
 
 Whats working:
@@ -19,9 +19,20 @@ Whats working:
     - Current Temprature
     - Set Temprature
     - Time Remaining
+    
+  - Direct Setting
+    - Temprature
+    - Time Remaining
+    - Fan Speed (5% increments) 
   
 Todos:
   - Handle error conditions / disconnects
-  - Write code for direct temp, time and fan set points
   - Better config example
+  - Bedjet autodetection
+    - Start multiple threads for multiple bedjets
+  - MQTT discovery?
   - Setup instructions
+  - Python package
+
+Notes:
+  - I will not be supporting setting and retreving wifi info as wifi serves no pratical use on the beddjet at this time.
