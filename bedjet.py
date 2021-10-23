@@ -3,13 +3,14 @@ from binascii import hexlify
 import paho.mqtt.client as mqtt 
 import time
 import sys
+import math
+import datetime
 
 mqttBroker = "homeassistant.local" 
 mqttUser = "homeassistant"
 mqttPassword = ""
 mqttPort = 1883
-
-btmac = ""
+bedjetMac = ''
 
 client = mqtt.Client()			
 client.username_pw_set(username=mqttUser,password=mqttPassword)
@@ -51,13 +52,24 @@ class bedjet:
 		except:
 			pass
 		self.adapter.start()
-		self.device = self.adapter.connect(btmac)
+		trycount = 0
+		while trycount < 4:
+			try:
+				self.device = self.adapter.connect(bedjetMac)
+				break
+			except pygatt.exceptions.NotConnectedError:
+				print('Failed to connect to ' + bedjetMac + ' try ' + str(trycount + 1) + ' of 4' )
+				trycount = trycount + 1
+		if trycount == 4:
+			print('Failed to connect to ' + bedjetMac + ' Aborting ')
+			sys.exit(0)
+			
 		self.devname = self.device.char_read("00002001-bed0-0080-aa55-4265644a6574").decode()
 		self.device.subscribe("00002000-bed0-0080-aa55-4265644a6574", callback=self.handle_data)
 				
 	def handle_data(self, handle, value):
-		self.temp_actual = int(value[7])+26
-		self.temp_setpoint = int(value[8])+26
+		self.temp_actual = round(((int(value[7]) - 0x26) + 66) - ((int(value[7]) - 0x26) / 9))
+		self.temp_setpoint = round(((int(value[8]) - 0x26) + 66) - ((int(value[8]) - 0x26) / 9))
 		self.time = (int(value[4]) * 60 *60) + (int(value[5]) * 60) + int(value[6])
 		self.timestring = str(int(value[4])) + ":" + str(int(value[5])) + ":" + str(int(value[6]))
 		self.fan = int(value[10]) * 5
@@ -89,6 +101,20 @@ class bedjet:
 	def press_preset(self, preset):
 		self.device.char_write( '00002004-bed0-0080-aa55-4265644a6574', [0x01,preset])
 
+	def set_fan(self, fanPercent):
+		if fanPercent >= 5 and fanPercent <= 100:
+			self.device.char_write( '00002004-bed0-0080-aa55-4265644a6574', [0x07,round(fanPercent/5)-1])
+		
+	def set_temp(self, temp):
+		if temp >= 66 and temp <= 104:
+			temp_byte = ( int((temp - 60) / 9) + (temp - 66))  + 0x26
+			self.device.char_write( '00002004-bed0-0080-aa55-4265644a6574', [0x03,temp_byte])
+		
+	def set_time(self, minutes):
+		self.device.char_write( '00002004-bed0-0080-aa55-4265644a6574', [0x02, minutes // 60, minutes % 60])
+		
+		
+		
 bjet = bedjet()
 
 def on_message(client, userdata, message):
@@ -126,6 +152,15 @@ def on_message(client, userdata, message):
 				bjet.set_mode(preset.m2)
 			if message.payload == b'm3':
 				bjet.set_mode(preset.m3)
+				
+		if command == 'set_temp':
+			bjet.set_temp(int(message.payload))
+			
+		if command == 'set_fan':
+			bjet.set_fan(int(message.payload))
+
+		if command == 'set_time':
+			bjet.set_time(int(message.payload))
 
 client.on_message=on_message 
     
