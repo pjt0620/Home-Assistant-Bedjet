@@ -35,4 +35,4 @@ Todos:
   - Python package
 
 Notes:
-  - I will not be supporting setting and retreving wifi info as wifi serves no pratical use on the beddjet at this time.
+  - I will not be supporting setting and retreving wifi info as wifi serves no pratical use on the bedjet at this time and it is a pain to do.
