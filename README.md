@@ -2,7 +2,8 @@
 Bedjet Home Assistant Mqtt Integration
 
 This is a reverse engineered bluetooth mqtt bridge for bedjet to connect with home assistant.
-This has been tested with a raspbery pi and a bedjet v3.
+
+This should work on any lunux pc with bluetooth le support but is tested on a raspberry pi and BedJet v3.
 
 Whats working:
   - Basic comunications with bedjet via bluetooth le
