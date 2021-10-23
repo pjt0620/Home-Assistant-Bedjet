@@ -1,4 +1,4 @@
-# Home-Assistant-Bedjet
+# Home-Assistant-Bedjet V0.0.2
 Bedjet Home Assistant Mqtt Integration
 
 This is a reverse engineered bluetooth mqtt bridge for bedjet to connect with home assistant.
